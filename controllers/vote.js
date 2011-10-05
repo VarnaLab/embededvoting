@@ -8,6 +8,7 @@ module.exports = function(req, res, next) {
 
     var votes = new FSDocs(__dirname+'/../votes');
     votes.get(req.param("pollId"), function(err, doc){
+        if(err) { res.render("tryagain"); return; }
         if(doc == null)
             doc = {};
             
@@ -16,7 +17,7 @@ module.exports = function(req, res, next) {
         } else {
             doc[req.param("name")] = req.param("option");
             votes.put(req.param("pollId"), doc, function(err, ok) {
-                if (err) { next(err); return; }
+                if(err) { res.render("tryagain"); return; }
                 res.render("thankyou", { title: "thank you" });
             });
         }
